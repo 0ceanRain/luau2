@@ -1,5 +1,6 @@
 local ability = {}
 ability.windup = 0.5
+ability.windup2 = 0.15
 ability.CD = 7
 ability.Damage = 15
 ability.PostureDamage = 50
@@ -7,6 +8,12 @@ local CombatStateModule = require(game.ReplicatedStorage.Shared.Modules.StateMod
 local AbilityRemote = game.ReplicatedStorage.Shared.Remotes.AbilityRemote
 local cd = false
 local debris = game:GetService("Debris")
+local stats = {
+	windup = ability.windup,
+	cooldown = ability.CD,
+	damage = ability.Damage,
+	postureDamage = ability.PostureDamage,
+}
 function Dash()
 	local character = game.Players.LocalPlayer.Character
 	local RunService = game:GetService("RunService")
@@ -33,7 +40,6 @@ function Dash()
 		elapsed = elapsed + dt
 		if elapsed >= DashDuration then
 			conn:Disconnect()
-			-- Clean up
 			linearVel:Destroy()
 			attachment:Destroy()
 			return
@@ -49,10 +55,17 @@ end
 
 function slash()
 	
+	--  anims play here then slash
+	task.delay(0.1, function()
+		AbilityRemote:FireServer(stats)
+	end)
 end
 
 function slash2()
-	
+	-- anim play here, then 0,1 slash
+	task.delay(0.1, function()
+		AbilityRemote:FireServer(stats)
+	end)
 end
 
 function ability:CanActivate()
@@ -69,15 +82,13 @@ function ability:Activate()
 		cd = false
 	end)
 	Dash()
-	local stats = {
-		windup = self.windup,
-		cooldown = self.CD,
-		damage = self.Damage,
-		postureDamage = self.PostureDamage,
-	}
+	
     task.delay(ability.windup, function()
 		print("Used")
-		AbilityRemote:FireServer(stats)
+		slash()
+		task.delay(ability.windup2, function()
+			slash2()
+		end)
     end)
 end
 
