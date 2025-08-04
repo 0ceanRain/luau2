@@ -1,10 +1,16 @@
 local ability = {}
 ability.windup = 0.5
 ability.windup2 = 0.15
-ability.CD = 7
+ability.CD = 1
 ability.Damage = 15
 ability.PostureDamage = 50
-local CombatStateModule = require(game.ReplicatedStorage.Shared.Modules.StateModule)
+ability.Parryable = true -- IGNORE
+ability.Blockable = true -- IGNORE
+ability.CanBeDodged = true -- IGNORE
+ability.CanBeCancelled = true
+
+ability.Hitbox = game.ReplicatedStorage.Shared.Hitboxes.Abilities.TestAbilities.TestHitbox -- IGNORE
+local CombatStateModule = require(game.ReplicatedStorage.Shared.UtilityModules.StateModule)
 local AbilityRemote = game.ReplicatedStorage.Shared.Remotes.AbilityRemote
 local cd = false
 local debris = game:GetService("Debris")
@@ -13,13 +19,18 @@ local stats = {
 	cooldown = ability.CD,
 	damage = ability.Damage,
 	postureDamage = ability.PostureDamage,
+	hitbox = ability.Hitbox,
+	Parryable = ability.Parryable,
+	Blockable = ability.Blockable,
+	CanBeDodged = ability.CanBeDodged,
+	CanBeCancelled = ability.CanBeCancelled
 }
 function Dash()
 	local character = game.Players.LocalPlayer.Character
 	local RunService = game:GetService("RunService")
 	local camera = workspace.CurrentCamera
 	local DashDuration = 0.3
-	local DashSpeed = 100
+	local DashSpeed = 65
 	local hrp = character.HumanoidRootPart
 
 	
